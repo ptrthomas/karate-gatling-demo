@@ -1,4 +1,3 @@
-@ignore
 Feature: delete cat by id and verify
 
   Scenario:

@@ -16,16 +16,21 @@ class CatsGatlingSimulation extends Simulation {
       http("POST /cats")
       .post("/")
       .body(StringBody("""{ "name": "Billie" }"""))
-      .check(jsonPath("$.id").saveAs("id")))
+      .check(jsonPath("$.id")
+        .saveAs("id")))
+
     .exec(
       http("GET /cats/{id}")
       .get("/${id}")
+      // intentional assertion failure
       .check(jsonPath("$.name").is("Billi")))
+
     .exec(
       http("PUT /cats/{id}")
       .put("/${id}")
       .body(StringBody("""{ "id":"${id}", "name": "Bob" }"""))
       .check(jsonPath("$.name").is("Bob")))
+
     .exec(http("GET /cats/{id}")
       .get("/${id}"))
 
@@ -33,17 +38,20 @@ class CatsGatlingSimulation extends Simulation {
     .exec(
       http("GET /cats")
       .get("/")
-      .check(jsonPath("$[*].id").findAll.optional.saveAs("ids")))
+      .check(jsonPath("$[*].id").findAll.optional
+        .saveAs("ids")))
+
     .doIf(_.contains("ids")) {
       foreach("${ids}", "id") {
         exec(
           http("DELETE /cats/{id}")
           .delete("/${id}")
           .check(bodyString.is("")))
-          .exec(
-            http("GET /cats/{id}")
-            .get("/${id}")
-            .check(status.is(404)))
+
+        .exec(
+          http("GET /cats/{id}")
+          .get("/${id}")
+          .check(status.is(404)))
       }
     }
 
