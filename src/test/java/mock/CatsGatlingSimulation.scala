@@ -16,12 +16,16 @@ class CatsGatlingSimulation extends Simulation {
       http("POST /cats")
       .post("/")
       .body(StringBody("""{ "name": "Billie" }"""))
+      .check(status.is(200))
+      .check(jsonPath("$.name").is("Billie"))
       .check(jsonPath("$.id")
         .saveAs("id")))
 
     .exec(
       http("GET /cats/{id}")
       .get("/${id}")
+      .check(status.is(200))
+      .check(jsonPath("$.id").is("${id}"))
       // intentional assertion failure
       .check(jsonPath("$.name").is("Billi")))
 
@@ -29,15 +33,19 @@ class CatsGatlingSimulation extends Simulation {
       http("PUT /cats/{id}")
       .put("/${id}")
       .body(StringBody("""{ "id":"${id}", "name": "Bob" }"""))
+      .check(status.is(200))
+      .check(jsonPath("$.id").is("${id}"))
       .check(jsonPath("$.name").is("Bob")))
 
     .exec(http("GET /cats/{id}")
-      .get("/${id}"))
+      .get("/${id}")
+      .check(status.is(200)))
 
   val delete = scenario("delete")
     .exec(
       http("GET /cats")
       .get("/")
+      .check(status.is(200))
       .check(jsonPath("$[*].id").findAll.optional
         .saveAs("ids")))
 
@@ -46,6 +54,7 @@ class CatsGatlingSimulation extends Simulation {
         exec(
           http("DELETE /cats/{id}")
           .delete("/${id}")
+          .check(status.is(200))
           .check(bodyString.is("")))
 
         .exec(

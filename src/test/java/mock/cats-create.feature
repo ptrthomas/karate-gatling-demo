@@ -8,8 +8,8 @@ Feature: cats crud
     When method post
     Then status 200
     And match response == { id: '#uuid', name: 'Billie' }
-
     * def id = response.id
+
     Given path id
     When method get
     Then status 200
