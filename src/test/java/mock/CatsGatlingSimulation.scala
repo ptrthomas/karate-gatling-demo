@@ -12,28 +12,38 @@ class CatsGatlingSimulation extends Simulation {
   val httpConf = http.baseURL(System.getProperty("mock.cats.url"))
 
   val create = scenario("create")
-    .exec(http("POST /cats")
-      .post("/").body(StringBody("""{ "name": "Billie" }"""))
+    .exec(
+      http("POST /cats")
+      .post("/")
+      .body(StringBody("""{ "name": "Billie" }"""))
       .check(jsonPath("$.id").saveAs("id")))
-    .exec(http("GET /cats/{id}")
+    .exec(
+      http("GET /cats/{id}")
       .get("/${id}")
       .check(jsonPath("$.name").is("Billi")))
-    .exec(http("PUT /cats/{id}")
-      .put("/${id}").body(StringBody("""{ "id":"${id}", "name": "Bob" }"""))
+    .exec(
+      http("PUT /cats/{id}")
+      .put("/${id}")
+      .body(StringBody("""{ "id":"${id}", "name": "Bob" }"""))
       .check(jsonPath("$.name").is("Bob")))
     .exec(http("GET /cats/{id}")
       .get("/${id}"))
 
   val delete = scenario("delete")
-    .exec(http("GET /cats")
+    .exec(
+      http("GET /cats")
       .get("/")
       .check(jsonPath("$[*].id").findAll.optional.saveAs("ids")))
     .doIf(_.contains("ids")) {
       foreach("${ids}", "id") {
-        exec(http("DELETE /cats/{id}")
-          .delete("/${id}"))
-          .exec(http("GET /cats/{id}")
-            .get("/${id}").check(status.is(404)))
+        exec(
+          http("DELETE /cats/{id}")
+          .delete("/${id}")
+          .check(bodyString.is("")))
+          .exec(
+            http("GET /cats/{id}")
+            .get("/${id}")
+            .check(status.is(404)))
       }
     }
 
