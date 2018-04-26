@@ -9,7 +9,7 @@ class CatsKarateSimulation extends Simulation {
 
   MockUtils.startServer()
 
-  val protocol = karateProtocol("/cats/{id}")
+  val protocol = karateProtocol(0, "/cats/{id}")
 
   val create = scenario("create").exec(karateFeature("classpath:mock/cats-create.feature"))
   val delete = scenario("delete").exec(karateFeature("classpath:mock/cats-delete.feature"))
