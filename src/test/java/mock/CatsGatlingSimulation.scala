@@ -12,8 +12,8 @@ class CatsGatlingSimulation extends Simulation {
   val httpConf = http.baseURL(System.getProperty("mock.cats.url"))
 
   val create = scenario("create")
-    .exec(
-      http("POST /cats")
+    .pause(25 milliseconds)
+    .exec(http("POST /cats")
       .post("/")
       .body(StringBody("""{ "name": "Billie" }"""))
       .check(status.is(200))
@@ -21,29 +21,30 @@ class CatsGatlingSimulation extends Simulation {
       .check(jsonPath("$.id")
         .saveAs("id")))
 
-    .exec(
-      http("GET /cats/{id}")
+    .pause(10 milliseconds).exec(
+    http("GET /cats/{id}")
       .get("/${id}")
       .check(status.is(200))
       .check(jsonPath("$.id").is("${id}"))
       // intentional assertion failure
       .check(jsonPath("$.name").is("Billi")))
-
+    .exitHereIfFailed
     .exec(
       http("PUT /cats/{id}")
-      .put("/${id}")
-      .body(StringBody("""{ "id":"${id}", "name": "Bob" }"""))
-      .check(status.is(200))
-      .check(jsonPath("$.id").is("${id}"))
-      .check(jsonPath("$.name").is("Bob")))
+        .put("/${id}")
+        .body(StringBody("""{ "id":"${id}", "name": "Bob" }"""))
+        .check(status.is(200))
+        .check(jsonPath("$.id").is("${id}"))
+        .check(jsonPath("$.name").is("Bob")))
 
-    .exec(http("GET /cats/{id}")
+    .pause(10 milliseconds).exec(
+    http("GET /cats/{id}")
       .get("/${id}")
       .check(status.is(200)))
 
   val delete = scenario("delete")
-    .exec(
-      http("GET /cats")
+    .pause(15 milliseconds).exec(
+    http("GET /cats")
       .get("/")
       .check(status.is(200))
       .check(jsonPath("$[*].id").findAll.optional
@@ -51,16 +52,16 @@ class CatsGatlingSimulation extends Simulation {
 
     .doIf(_.contains("ids")) {
       foreach("${ids}", "id") {
-        exec(
+        pause(20 milliseconds).exec(
           http("DELETE /cats/{id}")
-          .delete("/${id}")
-          .check(status.is(200))
-          .check(bodyString.is("")))
+            .delete("/${id}")
+            .check(status.is(200))
+            .check(bodyString.is("")))
 
-        .exec(
+          .pause(10 milliseconds).exec(
           http("GET /cats/{id}")
-          .get("/${id}")
-          .check(status.is(404)))
+            .get("/${id}")
+            .check(status.is(404)))
       }
     }
 
