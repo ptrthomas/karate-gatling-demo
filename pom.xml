@@ -20,7 +20,6 @@
             <groupId>com.intuit.karate</groupId>
             <artifactId>karate-netty</artifactId>
             <version>${karate.version}</version>
-            <scope>test</scope>
         </dependency>            
         <dependency>
             <groupId>com.intuit.karate</groupId>
@@ -57,7 +56,7 @@
                 <version>${gatling.plugin.version}</version>
                 <configuration>
                     <simulationsFolder>src/test/java</simulationsFolder>
-                    <includes>mock.CatsKarateSimulation</includes>
+                    <includes>mock.CatsKarateJmeterComparison</includes>
                 </configuration>
             </plugin>            
         </plugins>        
