@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>com.intuit.karate</groupId>
-            <artifactId>karate-netty</artifactId>
+            <artifactId>karate-apache</artifactId>
             <version>${karate.version}</version>
         </dependency>            
         <dependency>
@@ -63,24 +63,5 @@
             </plugin>            
         </plugins>        
     </build>
-
-    <profiles>
-        <profile>
-            <id>gatling</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.gatling</groupId>
-                        <artifactId>gatling-maven-plugin</artifactId>
-                        <version>${gatling.plugin.version}</version>
-                        <configuration>
-                            <simulationsFolder>src/test/java</simulationsFolder>
-                            <includes>mock.CatsGatlingSimulation</includes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
     
 </project>
