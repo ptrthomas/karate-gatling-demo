@@ -9,8 +9,8 @@ class CatsKarateJmeterComparison extends Simulation {
   MockUtils.startServer()
 
   val protocol = karateProtocol(
-    "/cats/{id}" -> pauseFor("get" -> 0, "delete" -> 0),
-    "/cats" -> pauseFor("get" -> 0, "post" -> 0)
+    "/cats/{id}" -> Nil,
+    "/cats" -> Nil
   )
 
   val flow = scenario("create").repeat(10) {
