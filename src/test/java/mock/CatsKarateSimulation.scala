@@ -1,13 +1,14 @@
 package mock
 
-import com.intuit.karate.gatling.PreDef.{pauseFor, _}
+import com.intuit.karate.gatling.PreDef._
 import io.gatling.core.Predef._
-
 import scala.concurrent.duration._
 
 class CatsKarateSimulation extends Simulation {
 
   MockUtils.startServer()
+
+  val feeder = Iterator.continually(Map("catName" -> MockUtils.getNextCatName))
 
   val protocol = karateProtocol(
     "/cats/{id}" -> Nil,
@@ -16,7 +17,7 @@ class CatsKarateSimulation extends Simulation {
 
   protocol.nameResolver = (req, ctx) => req.getHeader("karate-name")
 
-  val create = scenario("create").exec(karateFeature("classpath:mock/cats-create.feature"))
+  val create = scenario("create").feed(feeder).exec(karateFeature("classpath:mock/cats-create.feature"))
   val delete = scenario("delete").exec(karateFeature("classpath:mock/cats-delete.feature@name=delete"))
   val custom = scenario("custom").exec(karateFeature("classpath:mock/custom-rpc.feature"))
 

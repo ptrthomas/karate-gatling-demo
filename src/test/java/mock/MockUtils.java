@@ -2,11 +2,14 @@ package mock;
 
 import com.intuit.karate.FileUtils;
 import com.intuit.karate.PerfContext;
+import com.intuit.karate.Runner;
 import com.intuit.karate.netty.FeatureServer;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -18,6 +21,14 @@ public class MockUtils {
         File file = FileUtils.getFileRelativeTo(MockUtils.class, "mock.feature");
         FeatureServer server = FeatureServer.start(file, 0, false, null);
         System.setProperty("mock.cats.url", "http://localhost:" + server.getPort() + "/cats");        
+    }
+
+    private static final List<String> catNames = (List) Runner.runFeature("classpath:mock/feeder.feature", null, false).get("names");
+
+    private static final AtomicInteger counter = new AtomicInteger();
+
+    public static String getNextCatName() {
+        return catNames.get(counter.getAndIncrement() % catNames.size());
     }
 
     public static Map<String, Object> myRpc(Map<String, Object> map, PerfContext context) {
