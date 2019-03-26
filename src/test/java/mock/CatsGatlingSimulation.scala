@@ -9,7 +9,7 @@ class CatsGatlingSimulation extends Simulation {
 
   MockUtils.startServer()
 
-  val httpConf = http.baseURL(System.getProperty("mock.cats.url"))
+  val httpConf = http.baseUrl(System.getProperty("mock.cats.url"))
 
   val create = scenario("create")
     .pause(25 milliseconds)
@@ -66,8 +66,8 @@ class CatsGatlingSimulation extends Simulation {
     }
 
   setUp(
-    create.inject(rampUsers(10) over (5 seconds)).protocols(httpConf),
-    delete.inject(rampUsers(5) over (5 seconds)).protocols(httpConf)
+    create.inject(rampUsers(10) during (5 seconds)).protocols(httpConf),
+    delete.inject(rampUsers(5) during (5 seconds)).protocols(httpConf)
   )
 
 }
