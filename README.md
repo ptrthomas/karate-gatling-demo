@@ -1,3 +1,7 @@
+:warning: This demo / sample project has been moved under the Karate repo.
+Check here for the latest: 
+https://github.com/intuit/karate/tree/develop/examples/gatling
+
 # karate-gatling-demo
 demo sample project for karate [test-doubles](https://github.com/intuit/karate/tree/master/karate-netty) and [gatling integration](https://github.com/intuit/karate/tree/master/karate-gatling)
 
